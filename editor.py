@@ -5,21 +5,23 @@ class NumberInputField(InputField):
     def __init__(self, **kwargs):
         super().__init__(limit_content_to='0123456789.-',**kwargs)
         self.dragging = False
+        self.scroll_callback = kwargs.get('scroll_callback', None)
     
     def input(self, key):
         if key == "left mouse down" and self.hovered:
             self.dragging = True
-            self.start_y = mouse.y
+            self.start_x = mouse.x
             self.start_value = float(self.text) if self.text else 0
         if key == "left mouse up":
             self.dragging = False
     
     def update(self):
         if self.dragging:
-            delta_y = mouse.y - self.start_y
+            delta_x = mouse.x - self.start_x
             sensitivity = 10  # Adjust sensitivity as needed
-            new_value = self.start_value + delta_y * sensitivity
+            new_value = self.start_value + delta_x * sensitivity
             self.text = str(round(new_value, 3))
+            self.scroll_callback()
 
 class EditorWindow(Entity):
     def __init__(self):
@@ -60,7 +62,7 @@ class EditorWindow(Entity):
             position=(-0.05, y_offset, -0.1),
             scale=(0.5, 0.05, 1),
             max_lines=1,
-            on_value_changed=self.apply_changes
+            scroll_callback=self.apply_changes
         )
         
         # Y Position
@@ -72,7 +74,7 @@ class EditorWindow(Entity):
             position=(-0.05, y_offset, -0.1),
             scale=(0.5, 0.05, 1),
             max_lines=1,
-            on_value_changed=self.apply_changes
+            scroll_callback=self.apply_changes
         )
         
         # Z Position
@@ -84,7 +86,7 @@ class EditorWindow(Entity):
             position=(-0.05, y_offset, -0.1),
             scale=(0.5, 0.05, 1),
             max_lines=1,
-            on_value_changed=self.apply_changes
+            scroll_callback=self.apply_changes
         )
 
         self.inputs = [self.x_input, self.y_input, self.z_input]
