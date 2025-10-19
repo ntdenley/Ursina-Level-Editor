@@ -28,7 +28,7 @@ class EditorWindow(Entity):
             "Editor",
             parent=self,
             position=(-0.12, 0.4, -0.1),
-            scale=1.5,
+            scale=(1/0.3, 1),
             color=color.white
         )
         
@@ -75,7 +75,7 @@ class EditorWindow(Entity):
             text='Apply',
             parent=self,
             position=(-0.08, y_offset - 0.1, -0.1),
-            scale=(0.1, 0.04, 1),
+            scale=Vec3(1/0.3, 0.6, 1) * 0.1,
             color=color.blue,
             on_click=self.apply_changes
         )

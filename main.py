@@ -46,8 +46,12 @@ def update():
 
 
 # helpful on-screen hint
-Text("Hold Right-Click: camera control  WASD: move  Space/Ctrl: up/down  Shift: speed  Scroll: FOV  Esc: release mouse",
-     position=window.top_left, origin=(0,0), background=True, fontsize=8)
+Text(
+    "Hold Right-Click: camera control  WASD: move  Space/Ctrl: up/down  Shift: speed  Scroll: FOV  Esc: release mouse",
+    parent=camera.ui,
+    position =(-0.85, 0.45),
+    background=True, 
+    scale=0.6)
 
 Sky(color=color.azure)
 
