@@ -4,6 +4,22 @@ from ursina.prefabs.input_field import InputField
 class NumberInputField(InputField):
     def __init__(self, **kwargs):
         super().__init__(limit_content_to='0123456789.-',**kwargs)
+        self.dragging = False
+    
+    def input(self, key):
+        if key == "left mouse down" and self.hovered:
+            self.dragging = True
+            self.start_y = mouse.y
+            self.start_value = float(self.text) if self.text else 0
+        if key == "left mouse up":
+            self.dragging = False
+    
+    def update(self):
+        if self.dragging:
+            delta_y = mouse.y - self.start_y
+            sensitivity = 10  # Adjust sensitivity as needed
+            new_value = self.start_value + delta_y * sensitivity
+            self.text = str(round(new_value, 3))
 
 class EditorWindow(Entity):
     def __init__(self):
@@ -37,35 +53,38 @@ class EditorWindow(Entity):
         spacing = 0.08
         
         # X Position
-        Text("X:", parent=self, position=(-0.12, y_offset, -0.1), scale=1, color=color.white)
+        Text("X:", parent=self, position=(-0.4, y_offset, -0.1), scale=(1/0.3, 1), color=color.white, origin=(-0.5, 0.1))
         self.x_input = NumberInputField(
             default_value='0',
             parent=self,
             position=(-0.05, y_offset, -0.1),
             scale=(0.5, 0.05, 1),
-            max_lines=1
+            max_lines=1,
+            on_value_changed=self.apply_changes
         )
         
         # Y Position
         y_offset -= spacing
-        Text("Y:", parent=self, position=(-0.12, y_offset, -0.1), scale=1, color=color.white)
+        Text("Y:", parent=self, position=(-0.4, y_offset, -0.1), scale=(1/0.3, 1), color=color.white, origin=(-0.5, 0.1))
         self.y_input = NumberInputField(
             default_value='0',
             parent=self,
             position=(-0.05, y_offset, -0.1),
             scale=(0.5, 0.05, 1),
-            max_lines=1
+            max_lines=1,
+            on_value_changed=self.apply_changes
         )
         
         # Z Position
         y_offset -= spacing
-        Text("Z:", parent=self, position=(-0.12, y_offset, -0.1), scale=1, color=color.white)
+        Text("Z:", parent=self, position=(-0.4, y_offset, -0.1), scale=(1/0.3, 1), color=color.white, origin=(-0.5, 0.1))
         self.z_input = NumberInputField(
             default_value='0',
             parent=self,
             position=(-0.05, y_offset, -0.1),
             scale=(0.5, 0.05, 1),
-            max_lines=1
+            max_lines=1,
+            on_value_changed=self.apply_changes
         )
 
         self.inputs = [self.x_input, self.y_input, self.z_input]
